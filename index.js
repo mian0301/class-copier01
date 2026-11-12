@@ -78,6 +78,19 @@
     #${PANEL_ID} .cc-cancel { background: rgba(200,60,60,.95); }
     #${PANEL_ID} .cc-copy   { background: rgba(46,139,87,.95); }
 
+    /* 选中元素的名字：常驻显示，直到取消选取 */
+    #${PANEL_ID} .cc-name {
+        margin-top: 8px;
+        background: rgba(18,18,26,.95);
+        color: #ffb84d;
+        border: 1px solid rgba(255,159,26,.6);
+        border-radius: 8px;
+        padding: 6px 10px;
+        max-width: 340px;
+        word-break: break-all;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,.4);
+    }
     #${PANEL_ID} .cc-toast {
         margin-top: 8px;
         background: rgba(18,18,26,.95);
@@ -122,6 +135,7 @@
             <button class="cc-sub cc-cancel" title="取消选取">✕ 取消</button>
             <button class="cc-sub cc-copy" title="复制选择器">复制</button>
         </div>
+        <div class="cc-name"></div>
         <div class="cc-toast"></div>`;
     document.body.appendChild(panel);
 
@@ -132,6 +146,7 @@
     const btn       = panel.querySelector('.cc-btn');
     const btnCancel = panel.querySelector('.cc-cancel');
     const btnCopy   = panel.querySelector('.cc-copy');
+    const nameBox   = panel.querySelector('.cc-name');
     const toast     = panel.querySelector('.cc-toast');
 
     // ---------- 状态 ----------
@@ -202,11 +217,14 @@
         selected = el;
         drawSelection();
         if (!rafId) rafId = requestAnimationFrame(trackLoop);
-        showToast('已选取：' + getSelector(el));
+        nameBox.textContent = '已选取：' + getSelector(el);
+        nameBox.style.display = 'block';
     }
 
     function clearSelection() {
         selected = null;
+        nameBox.style.display = 'none';
+        nameBox.textContent = '';
         if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
         selBox.style.display = 'none';
     }
